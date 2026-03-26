@@ -6,7 +6,7 @@
 
 | Projeto | Descrição | Link |
 |---|---|---|
-| 📚 Planner TI Cesgranrio | Planner completo de estudos com Kanban, Calendário e Gráficos | [Acessar](https://thaisefreire.github.io/planner-cesgranrio) |
+| 📚 Planner TI Cesgranrio | Planner completo de estudos com Kanban, Calendário e Gráficos | [Acessar](https://thaisef.github.io/planner-estudo-concurso/)|
 
 ## 📚 Estudando atualmente
 - Banco de Dados (SQL, JOINs, Normalização)
