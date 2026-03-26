@@ -41,4 +41,4 @@ Planner completo para acompanhar estudos de TI para concurso Cesgranrio.
 
 Clique em Confirmar alterações
 
-Agora qualquer pessoa que acessar seu repositório já vê o link direto para o planner! 🎯
+
