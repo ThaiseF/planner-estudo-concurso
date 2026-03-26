@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planner TI · Cesgranrio / Petrobras</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:#ffffff;--bg2:#f7f7f5;--bg3:#efeeeb;
+  --surface:#ffffff;--border:#e3e2de;--border2:#d3d1cb;
+  --text:#1a1a18;--text2:#5a5a56;--text3:#9b9b94;
+  --accent:#2383e2;--accent-soft:#e8f1fc;
+  --green:#0f9d58;--green-soft:#e6f4ea;
+  --red:#d93025;--red-soft:#fce8e6;
+  --yellow:#f9ab00;--yellow-soft:#fef7e0;
+  --purple:#7c4dff;--purple-soft:#ede7fd;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.06);
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+  --nav-w:240px;--transition:160ms ease;
+}
+[data-theme="dark"]{
+  --bg:#191919;--bg2:#212121;--bg3:#2a2a2a;
+  --surface:#242424;--border:#333333;--border2:#404040;
+  --text:#f0f0ed;--text2:#b0b0a8;--text3:#717168;
+  --accent:#4c9fe8;--accent-soft:#1a2d40;
+  --green:#34a853;--green-soft:#0d2318;
+  --red:#ea4335;--red-soft:#2d1210;
+  --yellow:#fbbc04;--yellow-soft:#2d2200;
+  --purple:#ab82ff;--purple-soft:#201640;
+  --shadow:0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;min-height:100vh;transition:background var(--transition),color var(--transition)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+/* SIDEBAR */
+#sidebar{width:var(--nav-w);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;transition:transform var(--transition),background var(--transition)}
+.sidebar-header{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
+.app-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:.95rem;letter-spacing:-.3px;color:var(--text);text-decoration:none}
+.app-logo .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;color:#fff;font-size:.85rem;font-weight:700;flex-shrink:0}
+.app-subtitle{font-size:.7rem;color:var(--text3);font-weight:400;margin-top:1px}
+.nav-section{padding:8px 8px 0}
+.nav-label{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:8px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:var(--radius);cursor:pointer;font-size:.875rem;font-weight:500;color:var(--text2);transition:background var(--transition),color var(--transition);user-select:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--accent-soft);color:var(--accent)}
+.nav-item .nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.sidebar-footer{margin-top:auto;padding:12px 8px;border-top:1px solid var(--border)}
+
+/* MAIN */
+#main{margin-left:var(--nav-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:52px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;gap:8px;position:sticky;top:0;background:var(--bg);z-index:50;transition:background var(--transition)}
+.topbar-title{font-size:1rem;font-weight:600;color:var(--text);flex:1}
+.content-area{flex:1;padding:32px;max-width:1200px;width:100%}
+.page{display:none}.page.active{display:block}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius);font-family:var(--font);font-size:.825rem;font-weight:500;cursor:pointer;transition:all var(--transition);border:1px solid transparent;white-space:nowrap}
+.btn-ghost{background:transparent;color:var(--text2)}.btn-ghost:hover{background:var(--bg3);color:var(--text)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn-primary:hover{opacity:.88}
+.btn-sm{padding:4px 10px;font-size:.775rem}.btn-xs{padding:2px 7px;font-size:.72rem}
+
+/* HEADINGS */
+.section-title{font-size:1.5rem;font-weight:700;letter-spacing:-.4px;color:var(--text);margin-bottom:4px}
+.section-desc{font-size:.875rem;color:var(--text3);margin-bottom:28px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow);transition:background var(--transition),border-color var(--transition)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:.9rem;font-weight:600;color:var(--text)}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+
+/* STATS */
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:var(--shadow)}
+.stat-label{font-size:.75rem;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.stat-value{font-size:2rem;font-weight:700;letter-spacing:-1px;color:var(--text);line-height:1;margin:6px 0 2px}
+.stat-sub{font-size:.8rem;color:var(--text3)}
+.stat-accent{color:var(--accent)}.stat-green{color:var(--green)}.stat-red{color:var(--red)}
+
+/* PROGRESS */
+.progress-wrap{height:6px;background:var(--bg3);border-radius:99px;overflow:hidden;transition:background var(--transition)}
+.progress-bar{height:100%;border-radius:99px;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.progress-bar.green{background:var(--green)}.progress-bar.red{background:var(--red)}
+
+/* MATÉRIAS */
+.materia-item{border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);transition:box-shadow var(--transition),border-color var(--transition)}
+.materia-item:hover{border-color:var(--border2);box-shadow:var(--shadow-md)}
+.materia-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
+.materia-check{width:20px;height:20px;border:2px solid var(--border2);border-radius:6px;display:grid;place-items:center;flex-shrink:0;transition:all var(--transition);cursor:pointer}
+.materia-check.checked{background:var(--accent);border-color:var(--accent);color:#fff}
+.materia-info{flex:1;min-width:0}
+.materia-name{font-weight:600;font-size:.9rem;color:var(--text)}
+.materia-progress-row{display:flex;align-items:center;gap:10px;margin-top:5px}
+.materia-pct{font-size:.75rem;font-family:var(--mono);color:var(--text3);min-width:32px}
+.materia-progress-wrap{flex:1}
+.materia-actions{display:flex;gap:4px;opacity:0;transition:opacity var(--transition)}
+.materia-item:hover .materia-actions{opacity:1}
+.materia-arrow{color:var(--text3);font-size:.75rem;transition:transform .2s;flex-shrink:0}
+.materia-item.open .materia-arrow{transform:rotate(90deg)}
+.materia-body{display:none;padding:0 18px 16px;border-top:1px solid var(--border)}
+.materia-item.open .materia-body{display:block}
+.subtopico-list{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.subtopico-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg2);border-radius:var(--radius);font-size:.85rem;transition:background var(--transition)}
+.subtopico-item:hover{background:var(--bg3)}
+.subtopico-item.done{text-decoration:line-through;color:var(--text3)}
+.sub-text{flex:1;cursor:pointer}
+.sub-check{width:16px;height:16px;border:1.5px solid var(--border2);border-radius:4px;display:grid;place-items:center;flex-shrink:0;font-size:.65rem;transition:all var(--transition);cursor:pointer}
+.sub-check.checked{background:var(--green);border-color:var(--green);color:#fff}
+.sub-actions{display:flex;gap:3px;opacity:0;transition:opacity var(--transition)}
+.subtopico-item:hover .sub-actions{opacity:1}
+.icon-btn{background:none;border:none;cursor:pointer;font-size:.8rem;color:var(--text3);padding:2px 5px;border-radius:4px;transition:all var(--transition)}
+.icon-btn:hover{background:var(--bg3);color:var(--text)}
+.icon-btn.del:hover{background:var(--red-soft);color:var(--red)}
+.add-sub-row{display:flex;gap:8px;margin-top:10px}
+
+/* CALENDAR */
+.calendar-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.calendar-month{font-size:1rem;font-weight:600}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-weekday{text-align:center;font-size:.7rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:6px 0}
+.cal-day{aspect-ratio:1;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px;cursor:pointer;font-size:.8rem;font-weight:500;color:var(--text2);position:relative;transition:background var(--transition);min-height:48px}
+.cal-day:hover{background:var(--bg3)}
+.cal-day.today{font-weight:700;color:var(--accent)}
+.cal-day.today::before{content:'';width:22px;height:22px;background:var(--accent-soft);border-radius:50%;position:absolute;top:2px}
+.cal-day.today .cal-num{position:relative;z-index:1}
+.cal-day.empty{pointer-events:none}
+.cal-num{margin-bottom:2px}
+.cal-dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}
+.cal-dot{width:5px;height:5px;border-radius:50%}
+.cal-dot.estudo{background:var(--accent)}.cal-dot.revisao{background:var(--green)}.cal-dot.simulado{background:var(--red)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(3px);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;min-width:340px;max-width:520px;width:90%;box-shadow:var(--shadow-lg);animation:modalIn .2s ease;max-height:90vh;overflow-y:auto}
+@keyframes modalIn{from{opacity:0;transform:translateY(-12px) scale(.97)}to{opacity:1;transform:none}}
+.modal-title{font-size:1rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem;padding:2px 6px;border-radius:4px}
+.modal-close:hover{background:var(--bg3);color:var(--text)}
+
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-label{font-size:.8rem;font-weight:500;color:var(--text2);margin-bottom:5px;display:block}
+.form-input,.form-select,.form-textarea{width:100%;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font);font-size:.875rem;color:var(--text);outline:none;transition:border-color var(--transition)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* COLOR PICKER */
+.color-picker-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.color-opt{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all var(--transition)}
+.color-opt.selected{border-color:var(--text);transform:scale(1.15)}
+
+/* KANBAN */
+.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+.kanban-col{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;min-height:200px;transition:background var(--transition)}
+.kanban-col.drag-over{background:var(--accent-soft);border-color:var(--accent)}
+.kanban-col-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.kanban-col-dot{width:10px;height:10px;border-radius:50%}
+.kanban-col-name{font-weight:600;font-size:.875rem}
+.kanban-col-count{margin-left:auto;font-size:.75rem;font-family:var(--mono);color:var(--text3);background:var(--bg3);padding:1px 7px;border-radius:99px}
+.kanban-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;cursor:grab;font-size:.85rem;font-weight:500;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);user-select:none;transition:box-shadow var(--transition),transform var(--transition)}
+.kanban-card:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.kanban-card.dragging{opacity:.5;cursor:grabbing}
+
+/* QUESTÕES */
+.questoes-form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-bottom:24px}
+.chart-container{position:relative;width:100%;height:220px;margin-top:8px}
+.chart-svg{width:100%;height:100%}
+.chart-label{font-size:.7rem;font-family:var(--mono);fill:var(--text3)}
+.chart-tooltip{position:absolute;background:var(--text);color:var(--bg);font-size:.75rem;padding:5px 9px;border-radius:var(--radius);pointer-events:none;display:none;white-space:nowrap;z-index:10}
+.questoes-row{display:flex;align-items:center;gap:12px;padding:9px 12px;font-size:.85rem;border-bottom:1px solid var(--border)}
+.questoes-row:last-child{border-bottom:none}
+.questoes-date{color:var(--text3);font-family:var(--mono);font-size:.78rem;min-width:90px}
+.questoes-val{font-weight:600}
+.questoes-pct{margin-left:auto;font-family:var(--mono);font-weight:600}
+
+/* ERROS */
+.erro-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.erro-list{display:flex;flex-direction:column;gap:10px}
+.erro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start}
+.erro-badge{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--red-soft);color:var(--red);white-space:nowrap;margin-top:2px;flex-shrink:0}
+.erro-body{flex:1}
+.erro-subject{font-weight:600;font-size:.9rem;margin-bottom:3px}
+.erro-desc{font-size:.82rem;color:var(--text2);margin-bottom:4px}
+.erro-obs{font-size:.78rem;color:var(--text3);font-style:italic}
+.erro-date{font-size:.72rem;font-family:var(--mono);color:var(--text3);margin-top:4px}
+.erro-remove{color:var(--text3);cursor:pointer;padding:3px 6px;border-radius:4px;font-size:.8rem}
+.erro-remove:hover{background:var(--red-soft);color:var(--red)}
+
+/* SEARCH */
+.filter-row{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+.search-input{flex:1;padding:8px 12px 8px 34px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-family:var(--font);font-size:.875rem;color:var(--text);outline:none;transition:border-color var(--transition)}
+.search-input:focus{border-color:var(--accent)}
+.search-wrap{position:relative;flex:1}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:.9rem;pointer-events:none}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:.72rem;font-weight:600}
+.tag-blue{background:var(--accent-soft);color:var(--accent)}.tag-green{background:var(--green-soft);color:var(--green)}
+.tag-red{background:var(--red-soft);color:var(--red)}.tag-yellow{background:var(--yellow-soft);color:var(--yellow)}
+.tag-purple{background:var(--purple-soft);color:var(--purple)}
+
+/* CALENDAR EVENTS */
+.event-list{margin-top:16px}
+.event-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);background:var(--bg2);margin-bottom:6px;font-size:.85rem}
+.event-item .event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.event-remove{margin-left:auto;color:var(--text3);cursor:pointer;font-size:.8rem;padding:2px 5px;border-radius:4px}
+.event-remove:hover{background:var(--red-soft);color:var(--red)}
+
+/* THEME TOGGLE */
+.theme-toggle{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--radius);cursor:pointer;font-size:.875rem;color:var(--text2);width:100%;transition:background var(--transition);border:none;background:transparent;font-family:var(--font)}
+.theme-toggle:hover{background:var(--bg3);color:var(--text)}
+.toggle-pill{width:36px;height:20px;background:var(--border2);border-radius:99px;position:relative;transition:background var(--transition);flex-shrink:0}
+.toggle-pill::after{content:'';width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform var(--transition)}
+[data-theme="dark"] .toggle-pill{background:var(--accent)}
+[data-theme="dark"] .toggle-pill::after{transform:translateX(16px)}
+
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;padding:40px 20px;color:var(--text3);text-align:center}
+.empty-icon{font-size:2.5rem;margin-bottom:10px}
+.empty-text{font-size:.9rem}
+
+/* MENU */
+.menu-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--text);font-size:1.2rem;padding:4px}
+
+/* MOBILE */
+@media(max-width:768px){
+  :root{--nav-w:0px}
+  #sidebar{transform:translateX(-240px);width:240px}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .menu-toggle{display:block}
+  .grid-2,.grid-4{grid-template-columns:1fr}
+  .kanban-board{grid-template-columns:1fr}
+  .questoes-form,.form-row,.erro-form-grid{grid-template-columns:1fr}
+  .content-area{padding:20px 16px}
+  .materia-actions,.sub-actions{opacity:1}
+}
+
+/* UTILS */
+.flex{display:flex}.flex-center{display:flex;align-items:center}
+.gap-8{gap:8px}.gap-12{gap:12px}
+.mt-8{margin-top:8px}.mt-16{margin-top:16px}
+.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
+.text-sm{font-size:.85rem}.text-xs{font-size:.75rem}
+.text-muted{color:var(--text3)}.text-green{color:var(--green)}.text-red{color:var(--red)}
+.font-mono{font-family:var(--mono)}.font-semibold{font-weight:600}.w-full{width:100%}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.page.active{animation:fadeIn .15s ease}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <a class="app-logo" href="#">
+      <div class="logo-icon">TI</div>
+      <div><div>Planner Cesgranrio</div><div class="app-subtitle">Petrobras · Analista TI</div></div>
+    </a>
+  </div>
+  <nav class="nav-section">
+    <div class="nav-label">Visão Geral</div>
+    <div class="nav-item active" data-page="overview"><span class="nav-icon">🏠</span> Dashboard</div>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-label">Estudo</div>
+    <div class="nav-item" data-page="materias"><span class="nav-icon">📚</span> Matérias</div>
+    <div class="nav-item" data-page="calendario"><span class="nav-icon">📅</span> Calendário</div>
+    <div class="nav-item" data-page="kanban"><span class="nav-icon">🗂️</span> Kanban</div>
+  </nav>
+  <nav class="nav-section">
+    <div class="nav-label">Desempenho</div>
+    <div class="nav-item" data-page="questoes"><span class="nav-icon">📊</span> Questões</div>
+    <div class="nav-item" data-page="erros"><span class="nav-icon">📝</span> Caderno de Erros</div>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <div class="toggle-pill"></div>
+      <span id="theme-label">Modo escuro</span>
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main id="main">
+  <header class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Exportar</button>
+    <button class="btn btn-ghost btn-sm" onclick="triggerImport()">⬆ Importar</button>
+    <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
+    <button class="btn btn-primary btn-sm" onclick="showPage('questoes')">+ Questões</button>
+  </header>
+
+  <div class="content-area">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-overview">
+      <h1 class="section-title">👋 Bom estudo!</h1>
+      <p class="section-desc">Acompanhe seu progresso geral para o concurso Cesgranrio / Petrobras.</p>
+      <div class="grid-4 mb-16">
+        <div class="stat-card"><div class="stat-label">Progresso Total</div><div class="stat-value stat-accent" id="stat-total">0%</div><div class="stat-sub">matérias concluídas</div></div>
+        <div class="stat-card"><div class="stat-label">Questões Feitas</div><div class="stat-value" id="stat-questoes">0</div><div class="stat-sub">no total</div></div>
+        <div class="stat-card"><div class="stat-label">Média de Acertos</div><div class="stat-value stat-green" id="stat-acertos">—</div><div class="stat-sub">últimos registros</div></div>
+        <div class="stat-card"><div class="stat-label">Erros Registrados</div><div class="stat-value stat-red" id="stat-erros">0</div><div class="stat-sub">no caderno</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Progresso por Matéria</div><span class="tag tag-blue">Geral</span></div>
+          <div id="overview-materias"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Status Kanban</div><span class="tag tag-purple">Tópicos</span></div>
+          <div id="overview-kanban"></div>
+        </div>
+      </div>
+      <div class="card mt-16">
+        <div class="card-header"><div class="card-title">📅 Próximos Eventos</div></div>
+        <div id="overview-eventos"></div>
+      </div>
+    </div>
+
+    <!-- MATÉRIAS -->
+    <div class="page" id="page-materias">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:12px">
+        <h1 class="section-title" style="margin:0">📚 Matérias</h1>
+        <button class="btn btn-primary" onclick="openMateriaModal()">+ Nova Matéria</button>
+      </div>
+      <p class="section-desc">Expanda para ver subtópicos. Passe o mouse para editar ✏️ ou excluir 🗑️.</p>
+      <div id="materias-list"></div>
+    </div>
+
+    <!-- CALENDÁRIO -->
+    <div class="page" id="page-calendario">
+      <h1 class="section-title">📅 Calendário</h1>
+      <p class="section-desc">Registre seus estudos, revisões e simulados. Clique em um dia para adicionar eventos.</p>
+      <div class="card">
+        <div class="calendar-nav">
+          <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">← Anterior</button>
+          <div class="calendar-month" id="cal-month-label"></div>
+          <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">Próximo →</button>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <div class="flex-center gap-8 mt-16" style="flex-wrap:wrap">
+          <div class="flex-center gap-8"><div class="cal-dot estudo" style="width:10px;height:10px"></div><span class="text-xs text-muted">Estudo</span></div>
+          <div class="flex-center gap-8"><div class="cal-dot revisao" style="width:10px;height:10px"></div><span class="text-xs text-muted">Revisão</span></div>
+          <div class="flex-center gap-8"><div class="cal-dot simulado" style="width:10px;height:10px"></div><span class="text-xs text-muted">Simulado</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KANBAN -->
+    <div class="page" id="page-kanban">
+      <h1 class="section-title">🗂️ Kanban de Tópicos</h1>
+      <p class="section-desc">Arraste os cartões entre as colunas. Novos subtópicos adicionados nas Matérias aparecem aqui automaticamente.</p>
+      <div class="kanban-board" id="kanban-board"></div>
+    </div>
+
+    <!-- QUESTÕES -->
+    <div class="page" id="page-questoes">
+      <h1 class="section-title">📊 Controle de Questões</h1>
+      <p class="section-desc">Registre questões feitas por dia e acompanhe a evolução do seu desempenho.</p>
+      <div class="card mb-16">
+        <div class="card-title mb-12">Adicionar Registro</div>
+        <div class="questoes-form">
+          <div class="form-group" style="margin:0"><label class="form-label">Questões feitas</label><input type="number" class="form-input" id="q-qtd" placeholder="Ex: 30" min="1"></div>
+          <div class="form-group" style="margin:0"><label class="form-label">Acertos (%)</label><input type="number" class="form-input" id="q-pct" placeholder="Ex: 70" min="0" max="100"></div>
+          <button class="btn btn-primary" onclick="addQuestao()">Registrar</button>
+        </div>
+      </div>
+      <div class="card mb-16">
+        <div class="card-header"><div class="card-title">Evolução de Acertos (%)</div><span class="tag tag-green" id="q-avg-tag">—</span></div>
+        <div class="chart-container"><svg class="chart-svg" id="acertos-chart"></svg><div class="chart-tooltip" id="chart-tooltip"></div></div>
+      </div>
+      <div class="card"><div class="card-title mb-12">Histórico</div><div id="questoes-history"></div></div>
+    </div>
+
+    <!-- ERROS -->
+    <div class="page" id="page-erros">
+      <h1 class="section-title">📝 Caderno de Erros</h1>
+      <p class="section-desc">Registre os erros cometidos para revisar e evitar repeti-los.</p>
+      <div class="card mb-16">
+        <div class="card-title mb-12">Adicionar Erro</div>
+        <div class="erro-form-grid">
+          <div class="form-group" style="margin:0"><label class="form-label">Assunto / Matéria</label><input type="text" class="form-input" id="e-assunto" placeholder="Ex: JOIN SQL, TCP/IP..."></div>
+          <div class="form-group" style="margin:0"><label class="form-label">Erro cometido</label><input type="text" class="form-input" id="e-erro" placeholder="Descreva o erro brevemente"></div>
+          <div class="form-group" style="grid-column:1/-1;margin:0"><label class="form-label">Observação / Como evitar</label><textarea class="form-textarea" id="e-obs" placeholder="Adicione notas para revisão..."></textarea></div>
+        </div>
+        <button class="btn btn-primary" onclick="addErro()">Adicionar ao Caderno</button>
+      </div>
+      <div class="filter-row">
+        <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="erro-search" placeholder="Buscar por assunto ou erro..." oninput="renderErros()"></div>
+        <button class="btn btn-ghost btn-sm" onclick="clearSearch()">Limpar</button>
+      </div>
+      <div id="erros-list"></div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODAL: CRIAR / EDITAR MATÉRIA -->
+<div class="modal-overlay" id="materia-modal" onclick="closeModal('materia-modal',event)">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="materia-modal-title">Nova Matéria</span>
+      <button class="modal-close" onclick="closeModal('materia-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nome da matéria *</label>
+      <input type="text" class="form-input" id="m-name" placeholder="Ex: Segurança da Informação">
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="margin:0">
+        <label class="form-label">Ícone (emoji)</label>
+        <input type="text" class="form-input" id="m-icon" placeholder="🔒" maxlength="4" style="font-size:1.4rem;text-align:center;padding:6px">
+      </div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">Cor</label>
+        <div class="color-picker-row" id="m-color-picker"></div>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:14px">
+      <label class="form-label">Subtópicos — um por linha</label>
+      <textarea class="form-textarea" id="m-subs" placeholder="Criptografia&#10;Firewall&#10;VPN&#10;Certificados digitais" style="min-height:120px"></textarea>
+      <div style="font-size:.73rem;color:var(--text3);margin-top:4px">💡 Cada subtópico é adicionado automaticamente ao Kanban.</div>
+    </div>
+    <div class="flex gap-8">
+      <button class="btn btn-primary w-full" onclick="saveMateriaModal()">Salvar</button>
+      <button class="btn btn-ghost w-full" onclick="closeModal('materia-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR SUBTÓPICO -->
+<div class="modal-overlay" id="sub-modal" onclick="closeModal('sub-modal',event)">
+  <div class="modal" style="min-width:300px;max-width:380px">
+    <div class="modal-title">
+      <span>Editar Subtópico</span>
+      <button class="modal-close" onclick="closeModal('sub-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nome</label>
+      <input type="text" class="form-input" id="sub-edit-input" placeholder="Nome do subtópico">
+    </div>
+    <div class="flex gap-8">
+      <button class="btn btn-primary w-full" onclick="saveSubModal()">Salvar</button>
+      <button class="btn btn-ghost w-full" onclick="closeModal('sub-modal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CALENDÁRIO -->
+<div class="modal-overlay" id="cal-modal" onclick="closeModal('cal-modal',event)">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-date-title">Dia</span>
+      <button class="modal-close" onclick="closeModal('cal-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tipo de evento</label>
+      <select class="form-select" id="modal-tipo">
+        <option value="estudo">📘 Estudo</option>
+        <option value="revisao">📗 Revisão</option>
+        <option value="simulado">📕 Simulado</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descrição</label>
+      <input type="text" class="form-input" id="modal-desc" placeholder="Ex: SQL JOINs, Python funções...">
+    </div>
+    <div class="flex gap-8">
+      <button class="btn btn-primary w-full" onclick="saveCalEvent()">Salvar</button>
+      <button class="btn btn-ghost w-full" onclick="closeModal('cal-modal')">Cancelar</button>
+    </div>
+    <div class="event-list" id="modal-events"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   STATE & STORAGE
+   ================================================================ */
+const STORAGE_KEY = 'planner_csg_v3';
+
+const DEFAULT_MATERIAS = {
+  prog:      {name:'Programação',           icon:'💻',color:'blue',  subs:{'Lógica de programação':false,'Python básico ao avançado':false,'Estruturas de dados':false,'Algoritmos e complexidade':false,'POO':false}},
+  db:        {name:'Banco de Dados',         icon:'🗄️',color:'purple',subs:{'SQL SELECT / WHERE':false,'JOINs (INNER, LEFT, RIGHT)':false,'GROUP BY / HAVING':false,'Normalização (1FN-3FN)':false,'Transações e ACID':false,'Índices e performance':false}},
+  redes:     {name:'Redes',                  icon:'🌐',color:'blue',  subs:{'Modelo OSI':false,'TCP/IP':false,'HTTP / HTTPS':false,'DNS e DHCP':false,'Roteamento':false,'Segurança em redes':false}},
+  so:        {name:'Sistemas Operacionais',  icon:'🐧',color:'yellow',subs:{'Comandos Linux':false,'Permissões e usuários':false,'Processos e memória':false,'Shell scripting':false,'Sistemas de arquivos':false}},
+  engsoft:   {name:'Engenharia de Software', icon:'⚙️',color:'green', subs:{'Scrum e Agile':false,'Git e versionamento':false,'UML (diagramas)':false,'Padrões de projeto':false,'DevOps / CI/CD':false,'Testes de software':false}},
+  portugues: {name:'Português',              icon:'📖',color:'red',   subs:{'Interpretação de texto':false,'Coesão e coerência':false,'Gramática':false,'Redação oficial':false}},
+  logica:    {name:'Lógica',                 icon:'🧠',color:'purple',subs:{'Lógica proposicional':false,'Tabelas-verdade':false,'Silogismos':false,'Raciocínio lógico':false,'Sequências':false}}
+};
+
+function allSubsAsKanban(materias) {
+  const nao = [];
+  Object.values(materias).forEach(m => Object.keys(m.subs).forEach(s => nao.push(s)));
+  return {nao, estudando:[], dominado:[]};
+}
+
+const DEFAULT_STATE = {
+  materias: JSON.parse(JSON.stringify(DEFAULT_MATERIAS)),
+  kanban: allSubsAsKanban(DEFAULT_MATERIAS),
+  calendario:{}, questoes:[], erros:[]
+};
+
+function loadState() {
+  try {
+    // Try new key, then old keys for migration
+    for (const k of [STORAGE_KEY, 'planner_cesgranrio_v2', 'planner_cesgranrio_v1']) {
+      const s = localStorage.getItem(k);
+      if (s) return JSON.parse(s);
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_STATE));
+  } catch { return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+let state = loadState();
+// Ensure required keys
+if (!state.erros) state.erros = [];
+if (!state.questoes) state.questoes = [];
+if (!state.calendario) state.calendario = {};
+if (!state.kanban) state.kanban = allSubsAsKanban(state.materias);
+// Migrate materia structure
+Object.keys(state.materias).forEach(id => {
+  const m = state.materias[id];
+  if (!m.icon) m.icon = '📌';
+  if (!m.color) m.color = 'blue';
+});
+
+/* ================================================================
+   NAVIGATION
+   ================================================================ */
+const PAGES = ['overview','materias','calendario','kanban','questoes','erros'];
+const PAGE_TITLES = {overview:'Dashboard',materias:'Matérias',calendario:'Calendário',kanban:'Kanban de Tópicos',questoes:'Questões',erros:'Caderno de Erros'};
+
+function showPage(name) {
+  PAGES.forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('active', p===name);
+  });
+  document.querySelectorAll('.nav-item[data-page]').forEach(el => {
+    el.classList.toggle('active', el.dataset.page===name);
+  });
+  document.getElementById('topbar-title').textContent = PAGE_TITLES[name] || '';
+  if (name==='overview')   renderOverview();
+  if (name==='materias')   renderMaterias();
+  if (name==='calendario') renderCalendario();
+  if (name==='kanban')     renderKanban();
+  if (name==='questoes')   renderQuestoes();
+  if (name==='erros')      renderErros();
+  if (window.innerWidth<=768) document.getElementById('sidebar').classList.remove('open');
+}
+document.querySelectorAll('.nav-item[data-page]').forEach(el => el.addEventListener('click', () => showPage(el.dataset.page)));
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+/* ================================================================
+   THEME
+   ================================================================ */
+function toggleTheme() {
+  const h = document.documentElement;
+  const dark = h.dataset.theme==='dark';
+  h.dataset.theme = dark?'light':'dark';
+  document.getElementById('theme-label').textContent = dark?'Modo escuro':'Modo claro';
+  localStorage.setItem('theme', h.dataset.theme);
+}
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) {
+  document.documentElement.dataset.theme = savedTheme;
+  document.getElementById('theme-label').textContent = savedTheme==='dark'?'Modo claro':'Modo escuro';
+}
+
+/* ================================================================
+   COLOR SYSTEM
+   ================================================================ */
+const COLORS = [
+  {id:'blue',hex:'#2383e2'},{id:'purple',hex:'#7c4dff'},
+  {id:'green',hex:'#0f9d58'},{id:'red',hex:'#d93025'},
+  {id:'yellow',hex:'#f9ab00'},{id:'orange',hex:'#e8710a'},
+  {id:'pink',hex:'#e91e8c'},{id:'teal',hex:'#00897b'}
+];
+const TAG_CLASS = {blue:'blue',purple:'purple',green:'green',red:'red',yellow:'yellow',orange:'yellow',pink:'red',teal:'green'};
+
+let _selectedColor = 'blue';
+
+function buildColorPicker(containerId, current) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  _selectedColor = current || 'blue';
+  COLORS.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'color-opt' + (c.id===_selectedColor?' selected':'');
+    d.style.background = c.hex;
+    d.title = c.id;
+    d.addEventListener('click', () => {
+      el.querySelectorAll('.color-opt').forEach(x=>x.classList.remove('selected'));
+      d.classList.add('selected');
+      _selectedColor = c.id;
+    });
+    el.appendChild(d);
+  });
+}
+
+/* ================================================================
+   MODAL HELPERS
+   ================================================================ */
+function closeModal(id, e) {
+  if (!e || e.target.id===id) document.getElementById(id).classList.remove('open');
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+/* ================================================================
+   MATÉRIAS — MODAL CRIAR / EDITAR
+   ================================================================ */
+let _editingMateriaId = null;
+
+function openMateriaModal(id=null) {
+  _editingMateriaId = id;
+  const isEdit = id && state.materias[id];
+  document.getElementById('materia-modal-title').textContent = isEdit ? 'Editar Matéria' : 'Nova Matéria';
+
+  if (isEdit) {
+    const m = state.materias[id];
+    document.getElementById('m-name').value = m.name;
+    document.getElementById('m-icon').value = m.icon;
+    document.getElementById('m-subs').value = Object.keys(m.subs).join('\n');
+    buildColorPicker('m-color-picker', m.color||'blue');
+  } else {
+    document.getElementById('m-name').value = '';
+    document.getElementById('m-icon').value = '📌';
+    document.getElementById('m-subs').value = '';
+    buildColorPicker('m-color-picker', 'blue');
+  }
+  openModal('materia-modal');
+  setTimeout(() => document.getElementById('m-name').focus(), 120);
+}
+
+function saveMateriaModal() {
+  const name = document.getElementById('m-name').value.trim();
+  if (!name) { document.getElementById('m-name').focus(); showToast('⚠️ Informe o nome da matéria!'); return; }
+  const icon  = document.getElementById('m-icon').value.trim() || '📌';
+  const color = _selectedColor || 'blue';
+  const subsRaw = document.getElementById('m-subs').value;
+  const subNames = subsRaw.split('\n').map(s=>s.trim()).filter(Boolean);
+
+  if (_editingMateriaId) {
+    // EDIT existing
+    const m = state.materias[_editingMateriaId];
+    const oldSubs = Object.keys(m.subs);
+    m.name = name; m.icon = icon; m.color = color;
+    // Rebuild subs preserving checked state
+    const newSubs = {};
+    subNames.forEach(s => { newSubs[s] = m.subs.hasOwnProperty(s) ? m.subs[s] : false; });
+    m.subs = newSubs;
+    syncKanban(oldSubs, subNames);
+  } else {
+    // CREATE new
+    const id = 'mat_' + Date.now();
+    const subs = {};
+    subNames.forEach(s => { subs[s] = false; });
+    state.materias[id] = {name, icon, color, subs};
+    // Add new subtopics to kanban "nao" column
+    subNames.forEach(s => { if (!isInKanban(s)) state.kanban.nao.push(s); });
+  }
+
+  saveState();
+  closeModal('materia-modal');
+  renderMaterias();
+  updateDashboardStats();
+  showToast('✅ Matéria salva!');
+}
+
+function deleteMateria(id) {
+  const m = state.materias[id];
+  if (!confirm(`Excluir "${m.name}"?\nIsso removerá também seus subtópicos do Kanban.`)) return;
+  const subs = Object.keys(m.subs);
+  subs.forEach(s => removeFromKanban(s));
+  delete state.materias[id];
+  saveState();
+  renderMaterias();
+  updateDashboardStats();
+  showToast('🗑️ Matéria excluída.');
+}
+
+/* ================================================================
+   MATÉRIAS — SUBTÓPICOS
+   ================================================================ */
+let _editSubMateria=null, _editSubOld=null;
+
+function openSubModal(materiaId, subName) {
+  _editSubMateria = materiaId;
+  _editSubOld = subName;
+  document.getElementById('sub-edit-input').value = subName;
+  openModal('sub-modal');
+  setTimeout(() => document.getElementById('sub-edit-input').focus(), 100);
+}
+
+function saveSubModal() {
+  const newName = document.getElementById('sub-edit-input').value.trim();
+  if (!newName) return;
+  if (newName === _editSubOld) { closeModal('sub-modal'); return; }
+
+  const m = state.materias[_editSubMateria];
+  // Rebuild subs preserving order
+  const rebuilt = {};
+  Object.keys(m.subs).forEach(k => {
+    rebuilt[k===_editSubOld ? newName : k] = m.subs[k];
+  });
+  m.subs = rebuilt;
+
+  // Rename in kanban
+  ['nao','estudando','dominado'].forEach(col => {
+    const idx = state.kanban[col].indexOf(_editSubOld);
+    if (idx>-1) state.kanban[col][idx] = newName;
+  });
+
+  saveState();
+  closeModal('sub-modal');
+  renderMaterias();
+  showToast('✅ Subtópico renomeado!');
+}
+
+function addSubtopico(materiaId) {
+  const input = document.getElementById('new-sub-' + materiaId);
+  const name = input.value.trim();
+  if (!name) return;
+  if (state.materias[materiaId].subs.hasOwnProperty(name)) {
+    showToast('⚠️ Subtópico já existe!'); return;
+  }
+  state.materias[materiaId].subs[name] = false;
+  if (!isInKanban(name)) state.kanban.nao.push(name);
+  input.value = '';
+  state.materias[materiaId]._open = true; // keep open
+  saveState();
+  renderMaterias();
+  showToast('✅ Subtópico adicionado ao Kanban!');
+}
+
+function deleteSubtopico(materiaId, subName) {
+  if (!confirm(`Remover "${subName}"?\nEle também será removido do Kanban.`)) return;
+  delete state.materias[materiaId].subs[subName];
+  removeFromKanban(subName);
+  saveState();
+  renderMaterias();
+}
+
+/* ================================================================
+   KANBAN HELPERS
+   ================================================================ */
+function isInKanban(name) {
+  return ['nao','estudando','dominado'].some(c => state.kanban[c].includes(name));
+}
+function removeFromKanban(name) {
+  ['nao','estudando','dominado'].forEach(c => {
+    state.kanban[c] = state.kanban[c].filter(x => x!==name);
+  });
+}
+function syncKanban(oldSubs, newSubs) {
+  const removed = oldSubs.filter(s => !newSubs.includes(s));
+  const added   = newSubs.filter(s => !oldSubs.includes(s));
+  removed.forEach(s => removeFromKanban(s));
+  added.forEach(s => { if (!isInKanban(s)) state.kanban.nao.push(s); });
+}
+
+/* ================================================================
+   MATÉRIAS — RENDER
+   ================================================================ */
+function calcPct(id) {
+  const subs = state.materias[id].subs;
+  const keys = Object.keys(subs);
+  if (!keys.length) return 0;
+  return Math.round(keys.filter(k=>subs[k]).length / keys.length * 100);
+}
+
+function renderMaterias() {
+  const list = document.getElementById('materias-list');
+  const ids = Object.keys(state.materias);
+  if (!ids.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📚</div><div class="empty-text">Nenhuma matéria ainda.<br>Clique em "+ Nova Matéria" para começar.</div></div>';
+    return;
+  }
+  list.innerHTML = '';
+  ids.forEach(id => {
+    const m = state.materias[id];
+    const pct = calcPct(id);
+    const isOpen = m._open || false;
+    const isChecked = pct===100;
+    const barColor = pct>=80?'green':pct>=40?'':'red';
+    const tagCls = TAG_CLASS[m.color]||'blue';
+
+    const item = document.createElement('div');
+    item.className = 'materia-item'+(isOpen?' open':'');
+    // Escape id for use in onclick
+    const eid = id.replace(/'/g,"\\'");
+    item.innerHTML = `
+      <div class="materia-header">
+        <div class="materia-check${isChecked?' checked':''}" onclick="event.stopPropagation();toggleMateria('${eid}')">${isChecked?'✓':''}</div>
+        <div class="materia-info">
+          <div class="materia-name">${m.icon} ${m.name}</div>
+          <div class="materia-progress-row">
+            <span class="materia-pct">${pct}%</span>
+            <div class="materia-progress-wrap"><div class="progress-wrap"><div class="progress-bar ${barColor}" style="width:${pct}%"></div></div></div>
+          </div>
+        </div>
+        <span class="tag tag-${tagCls}" style="flex-shrink:0">${Object.keys(m.subs).length} tópicos</span>
+        <div class="materia-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" title="Editar matéria" onclick="openMateriaModal('${eid}')">✏️</button>
+          <button class="icon-btn del" title="Excluir matéria" onclick="deleteMateria('${eid}')">🗑️</button>
+        </div>
+        <span class="materia-arrow">▶</span>
+      </div>
+      <div class="materia-body">
+        <div class="subtopico-list" id="subs-${id}"></div>
+        <div class="add-sub-row" style="margin-top:10px">
+          <input type="text" class="form-input" id="new-sub-${id}" placeholder="+ Novo subtópico..." style="font-size:.82rem;padding:6px 10px" onkeydown="if(event.key==='Enter')addSubtopico('${eid}')">
+          <button class="btn btn-primary btn-sm" onclick="addSubtopico('${eid}')">Adicionar</button>
+        </div>
+      </div>`;
+    item.querySelector('.materia-header').addEventListener('click', () => toggleExpand(id, item));
+    list.appendChild(item);
+    renderSubs(id);
+  });
+}
+
+function renderSubs(id) {
+  const container = document.getElementById('subs-'+id);
+  if (!container) return;
+  const subs = state.materias[id].subs;
+  if (!Object.keys(subs).length) {
+    container.innerHTML = '<div class="text-xs text-muted" style="padding:6px 4px">Nenhum subtópico ainda.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  Object.entries(subs).forEach(([sub, done]) => {
+    const el = document.createElement('div');
+    el.className = 'subtopico-item'+(done?' done':'');
+    // Encode sub name for inline handlers
+    const safe = sub.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    el.innerHTML = `
+      <div class="sub-check${done?' checked':''}" onclick="toggleSub('${id}','${safe}');event.stopPropagation()">${done?'✓':''}</div>
+      <span class="sub-text" onclick="toggleSub('${id}','${safe}')">${sub}</span>
+      <div class="sub-actions">
+        <button class="icon-btn" title="Editar" onclick="event.stopPropagation();openSubModal('${id}','${safe}')">✏️</button>
+        <button class="icon-btn del" title="Excluir" onclick="event.stopPropagation();deleteSubtopico('${id}','${safe}')">🗑️</button>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+function toggleExpand(id, item) { state.materias[id]._open = item.classList.toggle('open'); }
+
+function toggleSub(id, sub) {
+  state.materias[id].subs[sub] = !state.materias[id].subs[sub];
+  saveState(); renderMaterias(); updateDashboardStats();
+}
+
+function toggleMateria(id) {
+  const pct = calcPct(id);
+  const check = pct<100;
+  Object.keys(state.materias[id].subs).forEach(k => { state.materias[id].subs[k]=check; });
+  saveState(); renderMaterias(); updateDashboardStats();
+}
+
+/* ================================================================
+   CALENDÁRIO
+   ================================================================ */
+let calYear, calMonth;
+function initCal() {
+  const n = new Date(); calYear=n.getFullYear(); calMonth=n.getMonth();
+  renderCalendario();
+}
+function changeMonth(dir) {
+  calMonth+=dir;
+  if(calMonth<0){calMonth=11;calYear--;} if(calMonth>11){calMonth=0;calYear++;}
+  renderCalendario();
+}
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+function renderCalendario() {
+  document.getElementById('cal-month-label').textContent=`${MONTHS[calMonth]} ${calYear}`;
+  const grid=document.getElementById('calendar-grid'); grid.innerHTML='';
+  DAYS.forEach(d=>{const e=document.createElement('div');e.className='cal-weekday';e.textContent=d;grid.appendChild(e);});
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  for(let i=0;i<first;i++){const e=document.createElement('div');e.className='cal-day empty';grid.appendChild(e);}
+  for(let d=1;d<=days;d++){
+    const key=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs=state.calendario[key]||[];
+    const isT=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===d;
+    const e=document.createElement('div');
+    e.className='cal-day'+(isT?' today':'');
+    e.innerHTML=`<span class="cal-num">${d}</span><div class="cal-dots">${evs.map(x=>`<div class="cal-dot ${x.tipo}"></div>`).join('')}</div>`;
+    e.addEventListener('click',()=>openCalModal(key,d));
+    grid.appendChild(e);
+  }
+}
+let _calKey='';
+function openCalModal(key,day){
+  _calKey=key;
+  document.getElementById('modal-date-title').textContent=`${day} de ${MONTHS[calMonth]} de ${calYear}`;
+  document.getElementById('modal-desc').value='';
+  renderModalEvents();
+  openModal('cal-modal');
+}
+function renderModalEvents(){
+  const evs=state.calendario[_calKey]||[];
+  const c=document.getElementById('modal-events');
+  if(!evs.length){c.innerHTML='<div class="text-sm text-muted mt-8">Nenhum evento neste dia.</div>';return;}
+  c.innerHTML=evs.map((e,i)=>`<div class="event-item"><div class="event-dot ${e.tipo}"></div><span class="text-sm">${e.desc}</span><span class="event-remove" onclick="removeCalEvent(${i})">✕</span></div>`).join('');
+}
+function saveCalEvent(){
+  const tipo=document.getElementById('modal-tipo').value;
+  const desc=document.getElementById('modal-desc').value.trim()||tipo;
+  if(!state.calendario[_calKey])state.calendario[_calKey]=[];
+  state.calendario[_calKey].push({tipo,desc});
+  saveState();renderModalEvents();renderCalendario();
+  document.getElementById('modal-desc').value='';
+}
+function removeCalEvent(idx){
+  state.calendario[_calKey].splice(idx,1);
+  if(!state.calendario[_calKey].length)delete state.calendario[_calKey];
+  saveState();renderModalEvents();renderCalendario();
+}
+
+/* ================================================================
+   KANBAN
+   ================================================================ */
+const KANBAN_COLS=[
+  {id:'nao',     name:'Não Estudado', dot:'var(--red)'},
+  {id:'estudando',name:'Estudando',   dot:'var(--yellow)'},
+  {id:'dominado', name:'Dominado',    dot:'var(--green)'}
+];
+
+function getEmoji(n) {
+  const l=n.toLowerCase();
+  if(l.includes('python'))return'🐍';if(l.includes('sql')||l.includes('banco')||l.includes('join')||l.includes('group')||l.includes('normal'))return'🗄️';
+  if(l.includes('linux')||l.includes('shell')||l.includes('permiss'))return'🐧';if(l.includes('tcp')||l.includes('http')||l.includes('dns')||l.includes('rede')||l.includes('roteam'))return'🌐';
+  if(l.includes('scrum')||l.includes('agile'))return'🔄';if(l.includes('git'))return'🌿';if(l.includes('uml'))return'📐';
+  if(l.includes('lógica')||l.includes('logica')||l.includes('silogis')||l.includes('proposic'))return'🧠';
+  if(l.includes('segur')||l.includes('cripto')||l.includes('firewall')||l.includes('vpn'))return'🔒';
+  if(l.includes('test'))return'🧪';if(l.includes('devops')||l.includes('ci/cd'))return'🚀';
+  return'📌';
+}
+
+let _dragCard=null,_dragFrom=null;
+
+function renderKanban(){
+  const board=document.getElementById('kanban-board'); board.innerHTML='';
+  KANBAN_COLS.forEach(col=>{
+    const cards=state.kanban[col.id]||[];
+    const el=document.createElement('div');
+    el.className='kanban-col'; el.dataset.col=col.id;
+    el.innerHTML=`<div class="kanban-col-header"><div class="kanban-col-dot" style="background:${col.dot}"></div><div class="kanban-col-name">${col.name}</div><div class="kanban-col-count">${cards.length}</div></div>`;
+    cards.forEach(name=>{
+      const c=document.createElement('div');
+      c.className='kanban-card'; c.draggable=true; c.dataset.name=name; c.dataset.from=col.id;
+      c.innerHTML=`<span style="font-size:1rem">${getEmoji(name)}</span>${name}`;
+      c.addEventListener('dragstart',e=>{_dragCard=name;_dragFrom=col.id;c.classList.add('dragging');});
+      c.addEventListener('dragend',()=>c.classList.remove('dragging'));
+      el.appendChild(c);
+    });
+    el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('drag-over');});
+    el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');
+      if(!_dragCard||_dragFrom===col.id)return;
+      const a=state.kanban[_dragFrom]; a.splice(a.indexOf(_dragCard),1);
+      state.kanban[col.id].push(_dragCard);
+      _dragCard=null;_dragFrom=null;
+      saveState();renderKanban();
+    });
+    board.appendChild(el);
+  });
+}
+
+/* ================================================================
+   QUESTÕES
+   ================================================================ */
+function addQuestao(){
+  const qtd=parseInt(document.getElementById('q-qtd').value);
+  const pct=parseInt(document.getElementById('q-pct').value);
+  if(isNaN(qtd)||qtd<1){alert('Informe a quantidade de questões.');return;}
+  if(isNaN(pct)||pct<0||pct>100){alert('Informe a porcentagem de acertos (0-100).');return;}
+  state.questoes.push({date:new Date().toISOString().slice(0,10),qtd,pct});
+  document.getElementById('q-qtd').value='';document.getElementById('q-pct').value='';
+  saveState();renderQuestoes();updateDashboardStats();
+}
+function renderQuestoes(){
+  const hist=document.getElementById('questoes-history');
+  if(!state.questoes.length){
+    hist.innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-text">Nenhum registro ainda.</div></div>';
+    document.getElementById('acertos-chart').innerHTML='';
+    document.getElementById('q-avg-tag').textContent='—';return;
+  }
+  const avg=Math.round(state.questoes.reduce((s,r)=>s+r.pct,0)/state.questoes.length);
+  document.getElementById('q-avg-tag').textContent=`Média: ${avg}%`;
+  hist.innerHTML=state.questoes.slice().reverse().map((r,i)=>{
+    const ri=state.questoes.length-1-i;
+    const cl=r.pct>=70?'text-green':r.pct>=50?'':'text-red';
+    return `<div class="questoes-row"><span class="questoes-date">${r.date}</span><span class="questoes-val">${r.qtd} questões</span><span class="questoes-pct ${cl}">${r.pct}%</span><button class="btn btn-ghost btn-sm" style="padding:2px 8px" onclick="removeQuestao(${ri})">✕</button></div>`;
+  }).join('');
+  drawChart();
+}
+function removeQuestao(idx){state.questoes.splice(idx,1);saveState();renderQuestoes();updateDashboardStats();}
+function drawChart(){
+  const svg=document.getElementById('acertos-chart'),data=state.questoes;
+  if(!data.length){svg.innerHTML='';return;}
+  const W=svg.parentElement.clientWidth||600,H=200,pad={top:20,right:20,bottom:30,left:40};
+  const iW=W-pad.left-pad.right,iH=H-pad.top-pad.bottom;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const pts=data.map((r,i)=>({x:pad.left+(data.length===1?iW/2:(i/(data.length-1))*iW),y:pad.top+iH-(r.pct/100)*iH,r}));
+  let gr='';[0,25,50,75,100].forEach(v=>{const y=pad.top+iH-(v/100)*iH;gr+=`<line x1="${pad.left}" y1="${y}" x2="${pad.left+iW}" y2="${y}" stroke="var(--border)" stroke-width="1"/><text x="${pad.left-6}" y="${y+4}" text-anchor="end" class="chart-label">${v}%</text>`;});
+  const pD=pts.map((p,i)=>`${i===0?'M':'L'}${p.x},${p.y}`).join(' ');
+  const aD=pD+` L${pts[pts.length-1].x},${pad.top+iH} L${pts[0].x},${pad.top+iH} Z`;
+  let xl='';pts.forEach((p,i)=>{if(data.length<=10||i%Math.ceil(data.length/10)===0)xl+=`<text x="${p.x}" y="${H-6}" text-anchor="middle" class="chart-label">${p.r.date.slice(5)}</text>`;});
+  const dots=pts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`).join('');
+  const avgY=pts.reduce((s,p)=>s+p.y,0)/pts.length;
+  svg.innerHTML=`${gr}<path d="${aD}" fill="var(--accent)" opacity=".08"/><path d="${pD}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/><line x1="${pad.left}" y1="${avgY}" x2="${pad.left+iW}" y2="${avgY}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/>${dots}${xl}`;
+  const tip=document.getElementById('chart-tooltip');
+  pts.forEach((p,i)=>{
+    const c=svg.querySelectorAll('circle')[i];if(!c)return;
+    c.addEventListener('mouseenter',()=>{tip.style.display='block';tip.textContent=`${p.r.date}: ${p.r.qtd}q · ${p.r.pct}%`;});
+    c.addEventListener('mousemove',e=>{const r=svg.parentElement.getBoundingClientRect();tip.style.left=(e.clientX-r.left+10)+'px';tip.style.top=(e.clientY-r.top-30)+'px';});
+    c.addEventListener('mouseleave',()=>{tip.style.display='none';});
+  });
+}
+
+/* ================================================================
+   CADERNO DE ERROS
+   ================================================================ */
+function addErro(){
+  const a=document.getElementById('e-assunto').value.trim();
+  const e=document.getElementById('e-erro').value.trim();
+  const o=document.getElementById('e-obs').value.trim();
+  if(!a||!e){alert('Preencha o assunto e o erro cometido.');return;}
+  state.erros.unshift({id:Date.now(),assunto:a,erro:e,obs:o,date:new Date().toLocaleDateString('pt-BR')});
+  document.getElementById('e-assunto').value='';document.getElementById('e-erro').value='';document.getElementById('e-obs').value='';
+  saveState();renderErros();updateDashboardStats();
+}
+function removeErro(id){state.erros=state.erros.filter(e=>e.id!==id);saveState();renderErros();updateDashboardStats();}
+function renderErros(){
+  const list=document.getElementById('erros-list');
+  const q=(document.getElementById('erro-search')?.value||'').toLowerCase();
+  const f=state.erros.filter(e=>!q||e.assunto.toLowerCase().includes(q)||e.erro.toLowerCase().includes(q));
+  if(!f.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">${q?'Nenhum resultado.':'Nenhum erro registrado ainda.'}</div></div>`;return;}
+  list.innerHTML=`<div class="erro-list">${f.map(e=>`<div class="erro-card"><span class="erro-badge">ERRO</span><div class="erro-body"><div class="erro-subject">${e.assunto}</div><div class="erro-desc">${e.erro}</div>${e.obs?`<div class="erro-obs">💡 ${e.obs}</div>`:''}<div class="erro-date">📅 ${e.date}</div></div><span class="erro-remove" onclick="removeErro(${e.id})">✕</span></div>`).join('')}</div>`;
+}
+function clearSearch(){document.getElementById('erro-search').value='';renderErros();}
+
+/* ================================================================
+   DASHBOARD
+   ================================================================ */
+function renderOverview(){updateDashboardStats();renderOverviewMaterias();renderOverviewKanban();renderOverviewEventos();}
+function updateDashboardStats(){
+  const ids=Object.keys(state.materias);
+  const tot=ids.length?Math.round(ids.reduce((s,id)=>s+calcPct(id),0)/ids.length):0;
+  document.getElementById('stat-total').textContent=tot+'%';
+  document.getElementById('stat-questoes').textContent=state.questoes.reduce((s,r)=>s+r.qtd,0);
+  document.getElementById('stat-acertos').textContent=state.questoes.length?Math.round(state.questoes.reduce((s,r)=>s+r.pct,0)/state.questoes.length)+'%':'—';
+  document.getElementById('stat-erros').textContent=state.erros.length;
+}
+function renderOverviewMaterias(){
+  const el=document.getElementById('overview-materias');
+  const ids=Object.keys(state.materias);
+  if(!ids.length){el.innerHTML='<div class="text-sm text-muted">Nenhuma matéria cadastrada.</div>';return;}
+  el.innerHTML=ids.map(id=>{const m=state.materias[id];const p=calcPct(id);return `<div style="margin-bottom:12px"><div class="flex-center gap-8 mb-4" style="margin-bottom:4px"><span>${m.icon}</span><span class="text-sm font-semibold">${m.name}</span><span class="text-xs font-mono text-muted" style="margin-left:auto">${p}%</span></div><div class="progress-wrap"><div class="progress-bar ${p>=80?'green':''}" style="width:${p}%"></div></div></div>`;}).join('');
+}
+function renderOverviewKanban(){
+  const el=document.getElementById('overview-kanban');
+  const tot=Object.values(state.kanban).reduce((s,a)=>s+a.length,0)||1;
+  el.innerHTML=[{id:'nao',l:'Não estudado',c:'var(--red)'},{id:'estudando',l:'Estudando',c:'var(--yellow)'},{id:'dominado',l:'Dominado',c:'var(--green)'}].map(x=>{const n=(state.kanban[x.id]||[]).length;const p=Math.round(n/tot*100);return `<div style="margin-bottom:12px"><div class="flex-center gap-8" style="margin-bottom:4px"><div style="width:10px;height:10px;border-radius:50%;background:${x.c};flex-shrink:0"></div><span class="text-sm">${x.l}</span><span class="text-xs font-mono text-muted" style="margin-left:auto">${n} tópico${n!==1?'s':''}</span></div><div class="progress-wrap"><div class="progress-bar" style="width:${p}%;background:${x.c}"></div></div></div>`;}).join('');
+}
+function renderOverviewEventos(){
+  const el=document.getElementById('overview-eventos');
+  const today=new Date(),up=[];
+  for(let i=0;i<14;i++){const d=new Date(today);d.setDate(today.getDate()+i);const k=d.toISOString().slice(0,10);if(state.calendario[k])state.calendario[k].forEach(ev=>up.push({day:d.toLocaleDateString('pt-BR'),ev}));}
+  if(!up.length){el.innerHTML='<div class="text-sm text-muted">Nenhum evento nos próximos 14 dias.</div>';return;}
+  el.innerHTML=up.slice(0,6).map(u=>`<div class="event-item"><div class="event-dot ${u.ev.tipo}"></div><span class="text-sm">${u.day}</span><span class="text-sm font-semibold" style="margin-left:4px">${u.ev.desc}</span><span class="tag tag-${u.ev.tipo==='estudo'?'blue':u.ev.tipo==='revisao'?'green':'red'}" style="margin-left:auto">${u.ev.tipo}</span></div>`).join('');
+}
+
+/* ================================================================
+   EXPORT / IMPORT
+   ================================================================ */
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`planner_cesgranrio_${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+function triggerImport(){document.getElementById('import-input').value='';document.getElementById('import-input').click();}
+function importData(event){
+  const file=event.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const imp=JSON.parse(e.target.result);
+      if(!imp.materias||!imp.kanban)throw new Error('Arquivo inválido.');
+      if(!confirm('Isso vai substituir todos os dados atuais. Continuar?'))return;
+      state=imp;
+      if(!state.erros)state.erros=[];if(!state.questoes)state.questoes=[];if(!state.calendario)state.calendario={};
+      saveState();
+      const cur=document.querySelector('.page.active');
+      showPage(cur?cur.id.replace('page-',''):'overview');
+      showToast('✅ Dados importados com sucesso!');
+    }catch(err){alert('Erro ao importar: '+err.message);}
+  };r.readAsText(file);
+}
+
+/* ================================================================
+   TOAST
+   ================================================================ */
+function showToast(msg){
+  const t=document.createElement('div');t.textContent=msg;
+  Object.assign(t.style,{position:'fixed',bottom:'24px',right:'24px',background:'var(--text)',color:'var(--bg)',padding:'10px 18px',borderRadius:'8px',fontSize:'.875rem',fontFamily:'var(--font)',boxShadow:'var(--shadow-lg)',zIndex:'9999',animation:'fadeIn .2s ease',maxWidth:'90vw'});
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+/* ================================================================
+   INIT
+   ================================================================ */
+initCal();
+renderOverview();
+</script>
+</body>
+</html>
